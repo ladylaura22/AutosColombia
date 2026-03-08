@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Salida - AutosColombia</title>
+</head>
+<body>
+<h2>Registrar Salida</h2>
+
+<p th:if="${mensaje}" th:text="${mensaje}" style="color:green;"></p>
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<form th:action="@{/salida}" th:object="${form}" method="post">
+    <div>
+        <label>Placa:</label>
+        <input type="text" th:field="*{placa}" />
+    </div>
+    <div>
+        <label>VIN:</label>
+        <input type="text" th:field="*{vin}" />
+    </div>
+    <button type="submit">Procesar salida</button>
+</form>
+
+<p><a th:href="@{/menu}">Volver</a></p>
+</body>
+</html>

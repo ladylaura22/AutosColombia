@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Parqueados - AutosColombia</title>
+</head>
+<body>
+<h2>Vehículos actualmente parqueados</h2>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>Placa</th>
+        <th>VIN</th>
+        <th>Hora ingreso</th>
+        <th>Método cobro</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="rp : ${parqueados}">
+        <td th:text="${rp.vehiculo.placa}"></td>
+        <td th:text="${rp.vehiculo.vin}"></td>
+        <td th:text="${rp.horaIngreso}"></td>
+        <td th:text="${rp.metodoCobro}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/menu}">Volver</a></p>
+</body>
+</html>

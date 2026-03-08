@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Ingreso - AutosColombia</title>
+</head>
+<body>
+<h2>Registrar Ingreso</h2>
+
+<p th:if="${mensaje}" th:text="${mensaje}" style="color:green;"></p>
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<form th:action="@{/ingreso}" th:object="${form}" method="post">
+    <h3>Vehículo</h3>
+    <div>
+        <label>Placa:</label>
+        <input type="text" th:field="*{placa}" />
+    </div>
+    <div>
+        <label>VIN:</label>
+        <input type="text" th:field="*{vin}" />
+    </div>
+    <div>
+        <label>Tipo:</label>
+        <select th:field="*{tipoVehiculo}">
+            <option th:value="Carro">Carro</option>
+            <option th:value="Moto">Moto</option>
+        </select>
+    </div>
+
+    <h3>Cliente</h3>
+    <div>
+        <label>Cédula:</label>
+        <input type="text" th:field="*{cedula}" />
+    </div>
+    <div>
+        <label>Nombre:</label>
+        <input type="text" th:field="*{nombre}" />
+    </div>
+    <div>
+        <label>Teléfono:</label>
+        <input type="text" th:field="*{telefono}" />
+    </div>
+
+    <button type="submit">Guardar ingreso</button>
+</form>
+
+<p><a th:href="@{/menu}">Volver</a></p>
+</body>
+</html>

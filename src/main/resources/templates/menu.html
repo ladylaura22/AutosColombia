@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Menú - AutosColombia</title>
+</head>
+<body>
+<h2>AutosColombia - Menú</h2>
+
+<ul>
+    <li><a th:href="@{/ingreso}">Registrar ingreso</a></li>
+    <li><a th:href="@{/salida}">Registrar salida</a></li>
+    <li><a th:href="@{/buscar}">Buscar registro por placa</a></li>
+    <li><a th:href="@{/parqueados}">Vehículos actualmente parqueados</a></li>
+</ul>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar sesión</button>
+</form>
+</body>
+</html>

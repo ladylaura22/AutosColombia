@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Buscar - AutosColombia</title>
+</head>
+<body>
+<h2>Buscar registro por placa</h2>
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<form th:action="@{/buscar}" th:object="${form}" method="post">
+    <label>Placa:</label>
+    <input type="text" th:field="*{placa}" />
+    <button type="submit">Buscar</button>
+</form>
+
+<div th:if="${registro}">
+    <h3>Resultado</h3>
+    <p><b>Placa:</b> <span th:text="${registro.vehiculo.placa}"></span></p>
+    <p><b>Hora ingreso:</b> <span th:text="${registro.horaIngreso}"></span></p>
+    <p><b>Hora salida:</b> <span th:text="${registro.horaSalida}"></span></p>
+    <p><b>Lugar actual:</b> <span th:text="${registro.lugarActual}"></span></p>
+    <p><b>Método cobro:</b> <span th:text="${registro.metodoCobro}"></span></p>
+</div>
+
+<p><a th:href="@{/menu}">Volver</a></p>
+</body>
+</html>
