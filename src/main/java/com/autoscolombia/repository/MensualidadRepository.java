@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 
-public interface MensualidadRepository extends JpaRepository<Mensualidad, Long> {
+public interface MensualidadRepository extends JpaRepository<Mensualidad, Integer> {
 
     @Query("""
             select (count(m) > 0)

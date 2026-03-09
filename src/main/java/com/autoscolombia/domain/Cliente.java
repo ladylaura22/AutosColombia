@@ -8,10 +8,11 @@ import jakarta.persistence.*;
         uniqueConstraints = @UniqueConstraint(name = "uq_cliente_cedula", columnNames = "cedula")
 )
 public class Cliente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cliente")
-    private Long idCliente;
+    private Integer idCliente;
 
     @Column(name = "cedula", nullable = false, length = 20)
     private String cedula;
@@ -22,8 +23,8 @@ public class Cliente {
     @Column(name = "telefono", nullable = false, length = 30)
     private String telefono;
 
-    public Long getIdCliente() { return idCliente; }
-    public void setIdCliente(Long idCliente) { this.idCliente = idCliente; }
+    public Integer getIdCliente() { return idCliente; }
+    public void setIdCliente(Integer idCliente) { this.idCliente = idCliente; }
 
     public String getCedula() { return cedula; }
     public void setCedula(String cedula) { this.cedula = cedula; }

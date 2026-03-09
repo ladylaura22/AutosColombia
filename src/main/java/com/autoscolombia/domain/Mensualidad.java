@@ -7,10 +7,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "mensualidad")
 public class Mensualidad {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_mensualidad")
-    private Long idMensualidad;
+    private Integer idMensualidad;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "placa", nullable = false)
@@ -25,8 +26,8 @@ public class Mensualidad {
     @Column(name = "esta_activa", nullable = false)
     private Boolean estaActiva = true;
 
-    public Long getIdMensualidad() { return idMensualidad; }
-    public void setIdMensualidad(Long idMensualidad) { this.idMensualidad = idMensualidad; }
+    public Integer getIdMensualidad() { return idMensualidad; }
+    public void setIdMensualidad(Integer idMensualidad) { this.idMensualidad = idMensualidad; }
 
     public Vehiculo getVehiculo() { return vehiculo; }
     public void setVehiculo(Vehiculo vehiculo) { this.vehiculo = vehiculo; }

@@ -8,11 +8,13 @@ import jakarta.persistence.*;
         uniqueConstraints = @UniqueConstraint(name = "uq_vehiculo_vin", columnNames = "vin")
 )
 public class Vehiculo {
+
     @Id
     @Column(name = "placa", length = 10)
     private String placa;
 
-    @Column(name = "vin", nullable = false, length = 17)
+    // IMPORTANTE: forzar CHAR(17) para que coincida con MySQL
+    @Column(name = "vin", nullable = false, columnDefinition = "CHAR(17)")
     private String vin;
 
     @Enumerated(EnumType.STRING)

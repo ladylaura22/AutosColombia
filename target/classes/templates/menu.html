@@ -2,20 +2,58 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Menú - AutosColombia</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script th:src="@{/js/main.js}" defer></script>
 </head>
 <body>
-<h2>AutosColombia - Menú</h2>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 AutosColombia</h1>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-danger">🚪 Cerrar Sesión</button>
+            </form>
+        </div>
 
-<ul>
-    <li><a th:href="@{/ingreso}">Registrar ingreso</a></li>
-    <li><a th:href="@{/salida}">Registrar salida</a></li>
-    <li><a th:href="@{/buscar}">Buscar registro por placa</a></li>
-    <li><a th:href="@{/parqueados}">Vehículos actualmente parqueados</a></li>
-</ul>
+        <div class="content-box">
+            <h2>Panel de Control</h2>
+            <p style="color: #666; margin-bottom: 30px;">Seleccione una opción para continuar</p>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Cerrar sesión</button>
-</form>
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <a th:href="@{/ingreso}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📥</div>
+                        <h3>Registrar Ingreso</h3>
+                        <p>Registrar entrada de vehículo al parqueadero</p>
+                    </a>
+                </div>
+
+                <div class="menu-card">
+                    <a th:href="@{/salida}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📤</div>
+                        <h3>Registrar Salida</h3>
+                        <p>Procesar salida y cobro del vehículo</p>
+                    </a>
+                </div>
+
+                <div class="menu-card">
+                    <a th:href="@{/buscar}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
+                        <h3>Buscar Registro</h3>
+                        <p>Consultar registro por placa del vehículo</p>
+                    </a>
+                </div>
+
+                <div class="menu-card">
+                    <a th:href="@{/parqueados}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🅿️</div>
+                        <h3>Vehículos Parqueados</h3>
+                        <p>Ver listado de vehículos actualmente en el parqueadero</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

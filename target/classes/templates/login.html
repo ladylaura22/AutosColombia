@@ -2,28 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login - AutosColombia</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script th:src="@{/js/main.js}" defer></script>
 </head>
 <body>
-<h2>Login</h2>
+    <div class="login-container">
+        <h2>🚗 AutosColombia</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Sistema de Gestión de Parqueadero</p>
 
-<div th:if="${param.error}">
-    <p style="color:red;">Usuario o contraseña inválidos</p>
-</div>
-<div th:if="${param.logout}">
-    <p style="color:green;">Sesión cerrada</p>
-</div>
+        <div th:if="${param.error}" class="alert alert-danger">
+            <strong>Error:</strong> Usuario o contraseña inválidos
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            ✓ Sesión cerrada exitosamente
+        </div>
 
-<form th:action="@{/login}" method="post">
-    <div>
-        <label>Usuario:</label>
-        <input type="text" name="username" />
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>👤 Usuario:</label>
+                <input type="text" name="username" placeholder="Ingrese su usuario" required autofocus/>
+            </div>
+            <div class="form-group">
+                <label>🔒 Contraseña:</label>
+                <input type="password" name="password" placeholder="Ingrese su contraseña" required/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-2">Iniciar Sesión</button>
+        </form>
     </div>
-    <div>
-        <label>Contraseña:</label>
-        <input type="password" name="password" />
-    </div>
-    <button type="submit">Ingresar</button>
-</form>
 </body>
 </html>

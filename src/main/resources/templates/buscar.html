@@ -2,28 +2,59 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Buscar - AutosColombia</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script th:src="@{/js/main.js}" defer></script>
 </head>
 <body>
-<h2>Buscar registro por placa</h2>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 AutosColombia</h1>
+            <a th:href="@{/menu}" class="btn btn-secondary">← Volver al Menú</a>
+        </div>
 
-<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+        <div class="content-box">
+            <h2>🔍 Buscar Registro por Placa</h2>
 
-<form th:action="@{/buscar}" th:object="${form}" method="post">
-    <label>Placa:</label>
-    <input type="text" th:field="*{placa}" />
-    <button type="submit">Buscar</button>
-</form>
+            <div th:if="${error}" class="alert alert-danger">
+                ✗ <span th:text="${error}"></span>
+            </div>
 
-<div th:if="${registro}">
-    <h3>Resultado</h3>
-    <p><b>Placa:</b> <span th:text="${registro.vehiculo.placa}"></span></p>
-    <p><b>Hora ingreso:</b> <span th:text="${registro.horaIngreso}"></span></p>
-    <p><b>Hora salida:</b> <span th:text="${registro.horaSalida}"></span></p>
-    <p><b>Lugar actual:</b> <span th:text="${registro.lugarActual}"></span></p>
-    <p><b>Método cobro:</b> <span th:text="${registro.metodoCobro}"></span></p>
-</div>
+            <form th:action="@{/buscar}" th:object="${form}" method="post">
+                <div class="form-group">
+                    <label>🔖 Placa del Vehículo:</label>
+                    <input type="text" th:field="*{placa}" placeholder="Ej: ABC123" required autofocus/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">🔍 Buscar Registro</button>
+            </form>
 
-<p><a th:href="@{/menu}">Volver</a></p>
+            <div th:if="${registro}" class="card mt-3" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);">
+                <h3 style="color: var(--primary-color); margin-bottom: 20px;">📋 Información del Registro</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <strong style="color: #666;">🔖 Placa:</strong>
+                        <p style="font-size: 18px; margin: 5px 0;" th:text="${registro.vehiculo.placa}"></p>
+                    </div>
+                    <div>
+                        <strong style="color: #666;">📥 Hora de Ingreso:</strong>
+                        <p style="font-size: 18px; margin: 5px 0;" th:text="${registro.horaIngreso}"></p>
+                    </div>
+                    <div>
+                        <strong style="color: #666;">📤 Hora de Salida:</strong>
+                        <p style="font-size: 18px; margin: 5px 0;" th:text="${registro.horaSalida != null ? registro.horaSalida : 'Aún en parqueadero'}"></p>
+                    </div>
+                    <div>
+                        <strong style="color: #666;">📍 Lugar Actual:</strong>
+                        <p style="font-size: 18px; margin: 5px 0;" th:text="${registro.lugarActual}"></p>
+                    </div>
+                    <div>
+                        <strong style="color: #666;">💳 Método de Cobro:</strong>
+                        <p style="font-size: 18px; margin: 5px 0;" th:text="${registro.metodoCobro}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

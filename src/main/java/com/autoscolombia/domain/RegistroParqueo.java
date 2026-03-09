@@ -7,10 +7,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "registro_parqueo")
 public class RegistroParqueo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_registro")
-    private Long idRegistro;
+    private Integer idRegistro;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "placa", nullable = false)
@@ -38,8 +39,8 @@ public class RegistroParqueo {
     @Column(name = "metodo_cobro", nullable = false)
     private MetodoCobro metodoCobro;
 
-    public Long getIdRegistro() { return idRegistro; }
-    public void setIdRegistro(Long idRegistro) { this.idRegistro = idRegistro; }
+    public Integer getIdRegistro() { return idRegistro; }
+    public void setIdRegistro(Integer idRegistro) { this.idRegistro = idRegistro; }
 
     public Vehiculo getVehiculo() { return vehiculo; }
     public void setVehiculo(Vehiculo vehiculo) { this.vehiculo = vehiculo; }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface RegistroParqueoRepository extends JpaRepository<RegistroParqueo, Long> {
+public interface RegistroParqueoRepository extends JpaRepository<RegistroParqueo, Integer> {
 
     @Query("""
            select rp
@@ -28,4 +28,3 @@ public interface RegistroParqueoRepository extends JpaRepository<RegistroParqueo
 
     List<RegistroParqueo> findByLugarActual(LugarActual lugarActual);
 }
-
