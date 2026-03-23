@@ -11,6 +11,8 @@ public class IngresoForm {
     private String nombre;
     private String telefono;
 
+    private Integer idCelda;
+
     public String getPlaca() { return placa; }
     public void setPlaca(String placa) { this.placa = placa; }
 
@@ -28,4 +30,7 @@ public class IngresoForm {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public Integer getIdCelda() { return idCelda; }
+    public void setIdCelda(Integer idCelda) { this.idCelda = idCelda; }
 }

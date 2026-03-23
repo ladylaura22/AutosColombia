@@ -17,9 +17,13 @@ public class RegistroParqueo {
     @JoinColumn(name = "placa", nullable = false)
     private Vehiculo vehiculo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "id_usuario", nullable = true)
     private Administrador administrador;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "id_celda", nullable = true)
+    private Celda celda;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_cliente", nullable = false)
@@ -47,6 +51,9 @@ public class RegistroParqueo {
 
     public Administrador getAdministrador() { return administrador; }
     public void setAdministrador(Administrador administrador) { this.administrador = administrador; }
+
+    public Celda getCelda() { return celda; }
+    public void setCelda(Celda celda) { this.celda = celda; }
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
