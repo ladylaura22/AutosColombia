@@ -4,11 +4,11 @@ import com.autoscolombia.domain.Administrador;
 import com.autoscolombia.repository.AdministradorRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+// Note: funcionalidad absorbida por CombinedUserDetailsService.
+// Se mantiene como referencia pero ya no se registra como bean de Spring.
 public class AdminUserDetailsService implements UserDetailsService {
 
     private final AdministradorRepository administradorRepository;

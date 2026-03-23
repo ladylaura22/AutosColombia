@@ -5,6 +5,7 @@ import com.autoscolombia.repository.*;
 import com.autoscolombia.web.dto.IngresoForm;
 import com.autoscolombia.web.dto.SalidaForm;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,19 +21,22 @@ public class ParqueaderoService {
     private final AdministradorRepository administradorRepository;
     private final RegistroParqueoRepository registroParqueoRepository;
     private final MensualidadRepository mensualidadRepository;
+    private final CeldaRepository celdaRepository;
 
     public ParqueaderoService(
             VehiculoRepository vehiculoRepository,
             ClienteRepository clienteRepository,
             AdministradorRepository administradorRepository,
             RegistroParqueoRepository registroParqueoRepository,
-            MensualidadRepository mensualidadRepository
+            MensualidadRepository mensualidadRepository,
+            CeldaRepository celdaRepository
     ) {
         this.vehiculoRepository = vehiculoRepository;
         this.clienteRepository = clienteRepository;
         this.administradorRepository = administradorRepository;
         this.registroParqueoRepository = registroParqueoRepository;
         this.mensualidadRepository = mensualidadRepository;
+        this.celdaRepository = celdaRepository;
     }
 
     @Transactional
@@ -43,6 +47,18 @@ public class ParqueaderoService {
         registroParqueoRepository.findActivoByPlaca(form.getPlaca()).ifPresent(rp -> {
             throw new IllegalStateException("Ya existe un ingreso activo para esa placa.");
         });
+
+        // Celda obligatoria
+        if (form.getIdCelda() == null) {
+            throw new IllegalArgumentException("Debe seleccionar una celda.");
+        }
+        Celda celda = celdaRepository.findById(form.getIdCelda())
+                .orElseThrow(() -> new IllegalArgumentException("Celda no encontrada."));
+        if (celda.getEstado() != EstadoCelda.DISPONIBLE) {
+            throw new IllegalStateException("La celda seleccionada no está disponible.");
+        }
+        celda.setEstado(EstadoCelda.OCUPADO);
+        celdaRepository.save(celda);
 
         // Vehiculo (crear o actualizar)
         Vehiculo vehiculo = vehiculoRepository.findById(form.getPlaca()).orElseGet(Vehiculo::new);
@@ -58,7 +74,8 @@ public class ParqueaderoService {
         cliente.setTelefono(form.getTelefono());
         cliente = clienteRepository.save(cliente);
 
-        Administrador admin = obtenerAdminAutenticado();
+        // Admin (opcional: solo si el usuario autenticado es ADMIN)
+        Administrador admin = obtenerAdminSiCorresponde();
 
         boolean mensualActiva = mensualidadRepository.tieneMensualidadActiva(vehiculo.getPlaca(), LocalDate.now());
         MetodoCobro metodoCobro = mensualActiva ? MetodoCobro.mensual : MetodoCobro.horas;
@@ -67,6 +84,7 @@ public class ParqueaderoService {
         rp.setVehiculo(vehiculo);
         rp.setCliente(cliente);
         rp.setAdministrador(admin);
+        rp.setCelda(celda);
         rp.setHoraIngreso(LocalDateTime.now());
         rp.setHoraSalida(null);
         rp.setLugarActual(LugarActual.parqueadero);
@@ -83,10 +101,10 @@ public class ParqueaderoService {
         }
 
         Vehiculo vehiculo = vehiculoRepository.findById(form.getPlaca())
-                .orElseThrow(() -> new IllegalArgumentException("No existe vehículo con placa: " + form.getPlaca()));
+                .orElseThrow(() -> new IllegalArgumentException("No existe vehiculo con placa: " + form.getPlaca()));
 
         if (!vehiculo.getVin().equalsIgnoreCase(form.getVin().trim())) {
-            throw new IllegalArgumentException("VIN no coincide con el vehículo de esa placa.");
+            throw new IllegalArgumentException("VIN no coincide con el vehiculo de esa placa.");
         }
 
         RegistroParqueo rp = registroParqueoRepository.findActivoByPlaca(form.getPlaca())
@@ -94,6 +112,15 @@ public class ParqueaderoService {
 
         rp.setHoraSalida(LocalDateTime.now());
         rp.setLugarActual(LugarActual.fuera);
+
+        // Liberar celda si tiene una asignada
+        if (rp.getCelda() != null) {
+            Celda celda = rp.getCelda();
+            if (celda.getEstado() == EstadoCelda.OCUPADO) {
+                celda.setEstado(EstadoCelda.DISPONIBLE);
+                celdaRepository.save(celda);
+            }
+        }
 
         // (Opcional) revalidar mensualidad en salida
         boolean mensualActiva = mensualidadRepository.tieneMensualidadActiva(form.getPlaca(), LocalDate.now());
@@ -118,24 +145,28 @@ public class ParqueaderoService {
         return registroParqueoRepository.findByLugarActual(LugarActual.parqueadero);
     }
 
-    private Administrador obtenerAdminAutenticado() {
+    private Administrador obtenerAdminSiCorresponde() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        return administradorRepository.findByNombreUsuario(username)
-                .orElseThrow(() -> new IllegalStateException("Administrador autenticado no encontrado: " + username));
+        boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("ROLE_ADMIN"::equals);
+        if (isAdmin) {
+            return administradorRepository.findByNombreUsuario(auth.getName()).orElse(null);
+        }
+        return null;
     }
 
     private void validarIngreso(IngresoForm form) {
         if (form.getPlaca() == null || form.getPlaca().isBlank()) throw new IllegalArgumentException("Placa obligatoria");
         if (form.getVin() == null || form.getVin().isBlank()) throw new IllegalArgumentException("VIN obligatorio");
-        if (form.getTipoVehiculo() == null) throw new IllegalArgumentException("Tipo de vehículo obligatorio");
-        if (form.getCedula() == null || form.getCedula().isBlank()) throw new IllegalArgumentException("Cédula obligatoria");
+        if (form.getTipoVehiculo() == null) throw new IllegalArgumentException("Tipo de vehiculo obligatorio");
+        if (form.getCedula() == null || form.getCedula().isBlank()) throw new IllegalArgumentException("Cedula obligatoria");
         if (form.getNombre() == null || form.getNombre().isBlank()) throw new IllegalArgumentException("Nombre obligatorio");
-        if (form.getTelefono() == null || form.getTelefono().isBlank()) throw new IllegalArgumentException("Teléfono obligatorio");
+        if (form.getTelefono() == null || form.getTelefono().isBlank()) throw new IllegalArgumentException("Telefono obligatorio");
 
         String vin = form.getVin().trim().toUpperCase();
         if (!vin.matches("^[A-HJ-NPR-Z0-9]{17}$")) {
-            throw new IllegalArgumentException("VIN inválido: 17 alfanuméricos sin I, O, Q.");
+            throw new IllegalArgumentException("VIN invalido: 17 alfanumericos sin I, O, Q.");
         }
     }
 }

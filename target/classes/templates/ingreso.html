@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tipo de Vehículo:</label>
-                        <select th:field="*{tipoVehiculo}" required>
+                        <select th:field="*{tipoVehiculo}" id="tipoVehiculo" required>
                             <option value="">-- Seleccione --</option>
                             <option th:value="Carro">🚗 Carro</option>
                             <option th:value="Moto">🏍️ Moto</option>
@@ -61,6 +61,20 @@
                     </div>
                 </div>
 
+                <h3>🅿️ Asignación de Celda</h3>
+                <div class="form-group">
+                    <label>Celda disponible <span style="color:red;">*</span>:</label>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <select th:field="*{idCelda}" id="celdaSelect" required style="flex:1;min-width:200px;">
+                            <option value="">-- Seleccione una celda --</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary" onclick="cargarCeldasDisponibles()">
+                            🔄 Consultar disponibles
+                        </button>
+                    </div>
+                    <small style="color:#666;">Seleccione el tipo de vehículo y consulte las celdas disponibles.</small>
+                </div>
+
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <button type="submit" class="btn btn-success" style="flex: 1;">✓ Guardar Ingreso</button>
                     <a th:href="@{/menu}" class="btn btn-secondary">✗ Cancelar</a>
@@ -68,5 +82,34 @@
             </form>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        function cargarCeldasDisponibles() {
+            var tipoVehiculo = document.getElementById('tipoVehiculo').value;
+            var tipoCelda = tipoVehiculo === 'Carro' ? 'AUTO' : (tipoVehiculo === 'Moto' ? 'MOTO' : '');
+            var url = '/api/celdas/disponibles' + (tipoCelda ? '?tipo=' + tipoCelda : '');
+
+            fetch(url, { credentials: 'same-origin' })
+                .then(function(r) { return r.json(); })
+                .then(function(celdas) {
+                    var select = document.getElementById('celdaSelect');
+                    select.innerHTML = '<option value="">-- Seleccione una celda --</option>';
+                    if (celdas.length === 0) {
+                        select.innerHTML += '<option value="" disabled>No hay celdas disponibles</option>';
+                    } else {
+                        celdas.forEach(function(c) {
+                            select.innerHTML += '<option value="' + c.idCelda + '">'
+                                + c.codigo + ' (' + c.tipo + ' - ' + (c.ubicacion || '') + ')</option>';
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    alert('Error al cargar celdas: ' + err);
+                });
+        }
+
+        // Cargar celdas al cambiar tipo de vehículo
+        document.getElementById('tipoVehiculo').addEventListener('change', cargarCeldasDisponibles);
+    </script>
 </body>
 </html>

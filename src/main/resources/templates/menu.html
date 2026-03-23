@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,9 +12,16 @@
     <div class="container">
         <div class="header">
             <h1>🚗 AutosColombia</h1>
-            <form th:action="@{/logout}" method="post" style="margin: 0;">
-                <button type="submit" class="btn btn-danger">🚪 Cerrar Sesión</button>
-            </form>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <span style="color:#fff;font-size:14px;">
+                    👤 <span sec:authentication="name">Usuario</span>
+                    <span sec:authorize="hasRole('ADMIN')" style="background:#e74c3c;padding:2px 6px;border-radius:4px;font-size:12px;margin-left:4px;">ADMIN</span>
+                    <span sec:authorize="hasRole('EMPLEADO')" style="background:#3498db;padding:2px 6px;border-radius:4px;font-size:12px;margin-left:4px;">EMPLEADO</span>
+                </span>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-danger">🚪 Cerrar Sesión</button>
+                </form>
+            </div>
         </div>
 
         <div class="content-box">
@@ -50,6 +58,22 @@
                         <div style="font-size: 48px; margin-bottom: 15px;">🅿️</div>
                         <h3>Vehículos Parqueados</h3>
                         <p>Ver listado de vehículos actualmente en el parqueadero</p>
+                    </a>
+                </div>
+
+                <div class="menu-card">
+                    <a th:href="@{/celdas}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🏢</div>
+                        <h3>Celdas</h3>
+                        <p>Dashboard de estado de celdas del parqueadero</p>
+                    </a>
+                </div>
+
+                <div class="menu-card" sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/empleados}">
+                        <div style="font-size: 48px; margin-bottom: 15px;">👥</div>
+                        <h3>Gestión de Empleados</h3>
+                        <p>Registrar, editar y eliminar empleados del sistema</p>
                     </a>
                 </div>
             </div>
