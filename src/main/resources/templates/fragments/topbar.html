@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="topbar(pageTitle, pageSubtitle)" class="app-topbar">
+    <div>
+        <h1 class="topbar-title" th:text="${pageTitle}">Página</h1>
+        <p class="topbar-subtitle" th:if="${pageSubtitle}" th:text="${pageSubtitle}"></p>
+    </div>
+    <div class="topbar-actions">
+        <span th:replace="~{fragments/topbar :: slot}"></span>
+    </div>
+</header>
+</body>
+</html>

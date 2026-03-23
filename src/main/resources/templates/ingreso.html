@@ -1,86 +1,93 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Ingreso - AutosColombia</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <script th:src="@{/js/main.js}" defer></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Registrar Ingreso', 'ingreso')}">
+<head></head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚗 AutosColombia</h1>
-            <a th:href="@{/menu}" class="btn btn-secondary">← Volver al Menú</a>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">📥 Registrar Ingreso de Vehículo</h2>
+                <p class="card-subtitle">Complete los datos del vehículo, cliente y celda asignada</p>
+            </div>
+            <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver al Menú</a>
         </div>
 
-        <div class="content-box">
-            <h2>📥 Registrar Ingreso de Vehículo</h2>
+        <div th:if="${mensaje}" class="alert alert-success">
+            ✓ <span th:text="${mensaje}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            ✗ <span th:text="${error}"></span>
+        </div>
 
-            <div th:if="${mensaje}" class="alert alert-success">
-                ✓ <span th:text="${mensaje}"></span>
-            </div>
-            <div th:if="${error}" class="alert alert-danger">
-                ✗ <span th:text="${error}"></span>
-            </div>
+        <form th:action="@{/ingreso}" th:object="${form}" method="post">
 
-            <form th:action="@{/ingreso}" th:object="${form}" method="post">
-                <h3>🚙 Información del Vehículo</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Placa:</label>
-                        <input type="text" th:field="*{placa}" placeholder="Ej: ABC123" required/>
-                    </div>
-                    <div class="form-group">
-                        <label>VIN (17 caracteres):</label>
-                        <input type="text" th:field="*{vin}" placeholder="Número de identificación" maxlength="17" required/>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Vehículo:</label>
-                        <select th:field="*{tipoVehiculo}" id="tipoVehiculo" required>
-                            <option value="">-- Seleccione --</option>
-                            <option th:value="Carro">🚗 Carro</option>
-                            <option th:value="Moto">🏍️ Moto</option>
-                        </select>
-                    </div>
+            <h3 class="form-section-title">🚙 Información del Vehículo</h3>
+            <div class="form-grid">
+                <div class="form-field col-4">
+                    <label class="form-label" for="placa">Placa <span class="req">*</span></label>
+                    <input id="placa" type="text" th:field="*{placa}"
+                           class="form-input" placeholder="Ej: ABC123" required/>
                 </div>
-
-                <h3>👤 Información del Cliente</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Cédula:</label>
-                        <input type="text" th:field="*{cedula}" placeholder="Número de identificación" required/>
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre Completo:</label>
-                        <input type="text" th:field="*{nombre}" placeholder="Nombre del cliente" required/>
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono:</label>
-                        <input type="text" th:field="*{telefono}" placeholder="Número de contacto" required/>
-                    </div>
+                <div class="form-field col-4">
+                    <label class="form-label" for="vin">VIN (17 caracteres) <span class="req">*</span></label>
+                    <input id="vin" type="text" th:field="*{vin}"
+                           class="form-input" placeholder="Número de identificación" maxlength="17" required/>
                 </div>
+                <div class="form-field col-4">
+                    <label class="form-label" for="tipoVehiculo">Tipo de Vehículo <span class="req">*</span></label>
+                    <select id="tipoVehiculo" th:field="*{tipoVehiculo}" class="form-select" required>
+                        <option value="">-- Seleccione --</option>
+                        <option th:value="Carro">🚗 Carro</option>
+                        <option th:value="Moto">🏍️ Moto</option>
+                    </select>
+                </div>
+            </div>
 
-                <h3>🅿️ Asignación de Celda</h3>
-                <div class="form-group">
-                    <label>Celda disponible <span style="color:red;">*</span>:</label>
-                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                        <select th:field="*{idCelda}" id="celdaSelect" required style="flex:1;min-width:200px;">
+            <h3 class="form-section-title">👤 Información del Cliente</h3>
+            <div class="form-grid">
+                <div class="form-field col-4">
+                    <label class="form-label" for="cedula">Cédula <span class="req">*</span></label>
+                    <input id="cedula" type="text" th:field="*{cedula}"
+                           class="form-input" placeholder="Número de identificación" required/>
+                </div>
+                <div class="form-field col-4">
+                    <label class="form-label" for="nombre">Nombre Completo <span class="req">*</span></label>
+                    <input id="nombre" type="text" th:field="*{nombre}"
+                           class="form-input" placeholder="Nombre del cliente" required/>
+                </div>
+                <div class="form-field col-4">
+                    <label class="form-label" for="telefono">Teléfono <span class="req">*</span></label>
+                    <input id="telefono" type="text" th:field="*{telefono}"
+                           class="form-input" placeholder="Número de contacto" required/>
+                </div>
+            </div>
+
+            <h3 class="form-section-title">🅿️ Asignación de Celda</h3>
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="celdaSelect">
+                        Celda disponible <span class="req">*</span>
+                    </label>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <select th:field="*{idCelda}" id="celdaSelect" class="form-select" required style="flex:1;">
                             <option value="">-- Seleccione una celda --</option>
                         </select>
-                        <button type="button" class="btn btn-secondary" onclick="cargarCeldasDisponibles()">
-                            🔄 Consultar disponibles
+                        <button type="button" class="btn btn-outline btn-sm"
+                                onclick="cargarCeldasDisponibles()">
+                            🔄 Consultar
                         </button>
                     </div>
-                    <small style="color:#666;">Seleccione el tipo de vehículo y consulte las celdas disponibles.</small>
+                    <p class="form-hint">Seleccione el tipo de vehículo y consulte las celdas disponibles.</p>
                 </div>
+            </div>
 
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button type="submit" class="btn btn-success" style="flex: 1;">✓ Guardar Ingreso</button>
-                    <a th:href="@{/menu}" class="btn btn-secondary">✗ Cancelar</a>
-                </div>
-            </form>
-        </div>
+            <div class="form-actions">
+                <a th:href="@{/menu}" class="btn btn-outline">✗ Cancelar</a>
+                <button type="submit" class="btn btn-success">✓ Guardar Ingreso</button>
+            </div>
+        </form>
     </div>
 
     <script th:inline="javascript">
@@ -108,8 +115,9 @@
                 });
         }
 
-        // Cargar celdas al cambiar tipo de vehículo
         document.getElementById('tipoVehiculo').addEventListener('change', cargarCeldasDisponibles);
     </script>
+
+</section>
 </body>
 </html>

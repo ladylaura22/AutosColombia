@@ -3,33 +3,46 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login - AutosColombia</title>
+    <title>Iniciar Sesión - AutosColombia</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <script th:src="@{/js/main.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
-    <div class="login-container">
-        <h2>🚗 AutosColombia</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 30px;">Sistema de Gestión de Parqueadero</p>
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-logo">🚗</div>
+        <h1 class="login-brand-name">AutosColombia</h1>
+        <p class="login-tagline">Sistema de Gestión de Parqueadero</p>
 
         <div th:if="${param.error}" class="alert alert-danger">
-            <strong>Error:</strong> Usuario o contraseña inválidos
+            ✗ Usuario o contraseña inválidos. Por favor, intente de nuevo.
         </div>
         <div th:if="${param.logout}" class="alert alert-success">
-            ✓ Sesión cerrada exitosamente
+            ✓ Sesión cerrada exitosamente.
         </div>
 
+        <h2 class="login-form-title">Iniciar Sesión</h2>
+
         <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label>👤 Usuario:</label>
-                <input type="text" name="username" placeholder="Ingrese su usuario" required autofocus/>
+            <div class="form-field mb-3">
+                <label class="form-label" for="username">👤 Usuario</label>
+                <input id="username" type="text" name="username"
+                       class="form-input"
+                       placeholder="Ingrese su usuario"
+                       required autofocus/>
             </div>
-            <div class="form-group">
-                <label>🔒 Contraseña:</label>
-                <input type="password" name="password" placeholder="Ingrese su contraseña" required/>
+            <div class="form-field mb-3">
+                <label class="form-label" for="password">🔒 Contraseña</label>
+                <input id="password" type="password" name="password"
+                       class="form-input"
+                       placeholder="Ingrese su contraseña"
+                       required/>
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-2">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
+                Iniciar Sesión
+            </button>
         </form>
     </div>
+</div>
 </body>
 </html>

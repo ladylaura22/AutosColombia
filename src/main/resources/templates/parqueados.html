@@ -1,70 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Parqueados - AutosColombia</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <script th:src="@{/js/main.js}" defer></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Vehículos Parqueados', 'parqueados')}">
+<head></head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚗 AutosColombia</h1>
-            <a th:href="@{/menu}" class="btn btn-secondary">← Volver al Menú</a>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">🅿️ Vehículos Actualmente Parqueados</h2>
+                <p class="card-subtitle">
+                    Total: <strong th:text="${parqueados.size()}">0</strong> vehículo(s)
+                </p>
+            </div>
+            <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver al Menú</a>
         </div>
 
-        <div class="content-box">
-            <h2>🅿️ Vehículos Actualmente Parqueados</h2>
-            <p style="color: #666; margin-bottom: 25px;">
-                Total de vehículos: <strong th:text="${parqueados.size()}"></strong>
-            </p>
+        <!-- Live search -->
+        <div style="max-width:360px; margin-bottom:16px;">
+            <label class="form-label">🔍 Filtrar tabla</label>
+            <input type="text" id="tableSearch" class="form-input"
+                   placeholder="Placa, VIN, tipo..."/>
+        </div>
 
-            <!-- Campo de búsqueda en tiempo real -->
-            <div class="form-group" style="max-width: 400px; margin-bottom: 25px;">
-                <label>🔍 Buscar en tabla:</label>
-                <input type="text" id="tableSearch" placeholder="Filtrar por placa, VIN, tipo..." />
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>🔖 Placa</th>
-                            <th>🔢 VIN</th>
-                            <th>🚙 Tipo</th>
-                            <th>📥 Hora de Ingreso</th>
-                            <th>💳 Método de Cobro</th>
-                            <th>📍 Lugar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="rp : ${parqueados}">
-                            <td><strong th:text="${rp.vehiculo.placa}"></strong></td>
-                            <td th:text="${rp.vehiculo.vin}"></td>
-                            <td>
-                                <span th:if="${rp.vehiculo.tipoVehiculo.name() == 'Carro'}">🚗 Carro</span>
-                                <span th:if="${rp.vehiculo.tipoVehiculo.name() == 'Moto'}">🏍️ Moto</span>
-                            </td>
-                            <td th:text="${#temporals.format(rp.horaIngreso, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td>
-                                <span th:if="${rp.metodoCobro.name() == 'Por_hora'}" class="badge badge-info">⏱️ Por Hora</span>
-                                <span th:if="${rp.metodoCobro.name() == 'Mensualidad'}" class="badge badge-success">📅 Mensualidad</span>
-                            </td>
-                            <td>
-                                <span th:if="${rp.lugarActual.name() == 'Parqueadero'}" class="badge badge-primary">🅿️ Parqueadero</span>
-                                <span th:if="${rp.lugarActual.name() == 'Afuera'}" class="badge badge-secondary">🚪 Afuera</span>
-                            </td>
-                        </tr>
-                        <tr th:if="${parqueados.empty}">
-                            <td colspan="6" style="text-align: center; color: #999; padding: 40px;">
-                                No hay vehículos parqueados actualmente
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>🔖 Placa</th>
+                        <th>🔢 VIN</th>
+                        <th>🚙 Tipo</th>
+                        <th>📥 Hora de Ingreso</th>
+                        <th>💳 Método de Cobro</th>
+                        <th>📍 Lugar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rp : ${parqueados}">
+                        <td><strong th:text="${rp.vehiculo.placa}"></strong></td>
+                        <td th:text="${rp.vehiculo.vin}"></td>
+                        <td>
+                            <span th:if="${rp.vehiculo.tipoVehiculo.name() == 'Carro'}">🚗 Carro</span>
+                            <span th:if="${rp.vehiculo.tipoVehiculo.name() == 'Moto'}">🏍️ Moto</span>
+                        </td>
+                        <td th:text="${#temporals.format(rp.horaIngreso, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <span th:if="${rp.metodoCobro.name() == 'Por_hora'}"   class="badge badge-info">⏱️ Por Hora</span>
+                            <span th:if="${rp.metodoCobro.name() == 'Mensualidad'}" class="badge badge-success">📅 Mensualidad</span>
+                        </td>
+                        <td>
+                            <span th:if="${rp.lugarActual.name() == 'Parqueadero'}" class="badge badge-primary">🅿️ Parqueadero</span>
+                            <span th:if="${rp.lugarActual.name() == 'Afuera'}"      class="badge badge-muted">🚪 Afuera</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${parqueados.empty}">
+                        <td colspan="6" class="table-empty">
+                            No hay vehículos parqueados actualmente
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+
+</section>
 </body>
 </html>

@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Celdas', 'celdas')}">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Celdas - AutosColombia</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/css/celdas.css}"/>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚗 AutosColombia</h1>
-            <div style="display:flex;gap:10px;align-items:center;">
-                <a th:href="@{/menu}" class="btn btn-secondary">← Volver al Menú</a>
-                <form th:action="@{/logout}" method="post" style="margin:0;">
-                    <button type="submit" class="btn btn-danger">🚪 Cerrar Sesión</button>
-                </form>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">🏢 Dashboard de Celdas</h2>
+                <p class="card-subtitle">Estado actual de todas las celdas del parqueadero</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <a th:href="@{/celdas/nueva}" sec:authorize="hasRole('ADMIN')"
+                   class="btn btn-success btn-sm">+ Nueva Celda</a>
+                <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver al Menú</a>
             </div>
         </div>
 
-        <div class="content-box">
-            <h2>🅿️ Dashboard de Celdas</h2>
+        <div th:if="${param.exito}" class="alert alert-success">✓ Operación realizada con éxito.</div>
+        <div th:if="${error}" class="alert alert-danger">✗ <span th:text="${error}"></span></div>
 
-            <div th:if="${param.exito}" class="alert alert-success">✓ Operación realizada con éxito.</div>
-            <div th:if="${error}" class="alert alert-danger">✗ <span th:text="${error}"></span></div>
-
-            <!-- Botón crear celda (solo admin) -->
-            <div sec:authorize="hasRole('ADMIN')" style="margin-bottom:20px;">
-                <a th:href="@{/celdas/nueva}" class="btn btn-success">+ Nueva Celda</a>
+        <!-- Legend -->
+        <div class="celda-legend">
+            <div class="celda-legend-item">
+                <span class="celda-legend-dot dot-disponible"></span> Disponible
             </div>
-
-            <!-- Leyenda -->
-            <div style="display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap;">
-                <span><span class="badge-disponible">■</span> Disponible</span>
-                <span><span class="badge-ocupado">■</span> Ocupada</span>
-                <span><span class="badge-mantenimiento">■</span> Mantenimiento</span>
+            <div class="celda-legend-item">
+                <span class="celda-legend-dot dot-ocupado"></span> Ocupada
             </div>
+            <div class="celda-legend-item">
+                <span class="celda-legend-dot dot-mantenimiento"></span> Mantenimiento
+            </div>
+        </div>
 
-            <!-- Grid de celdas -->
-            <div id="gridCeldas" class="grid-celdas">
-                <div th:each="celda : ${celdas}"
-                     th:classappend="${celda.estado.name().toLowerCase()}"
-                     class="celda">
-                    <strong th:text="${celda.codigo}">A-101</strong><br/>
-                    <small th:text="${celda.tipo} + ' • ' + ${celda.ubicacion}">AUTO • Piso 1</small><br/>
-                    <span th:text="${celda.estado}">DISPONIBLE</span>
+        <!-- Cell grid -->
+        <div id="gridCeldas" class="celda-grid">
+            <div th:each="celda : ${celdas}"
+                 th:classappend="${celda.estado.name().toLowerCase()}"
+                 class="celda-card">
+                <strong th:text="${celda.codigo}">A-101</strong>
+                <small th:text="${celda.tipo} + ' • ' + ${celda.ubicacion}">AUTO • Piso 1</small>
+                <span class="estado-label" th:text="${celda.estado}">DISPONIBLE</span>
 
-                    <!-- Cambiar estado (solo admin) -->
-                    <div sec:authorize="hasRole('ADMIN')" style="margin-top:8px;">
-                        <form th:action="@{/celdas/{id}/estado(id=${celda.idCelda})}" method="post"
-                              style="display:inline-flex;gap:4px;flex-wrap:wrap;align-items:center;">
-                            <select name="estado" style="font-size:12px;padding:2px;">
-                                <option th:each="est : ${estadoCelda}"
-                                        th:value="${est}"
-                                        th:text="${est}"
-                                        th:selected="${celda.estado == est}">DISPONIBLE</option>
-                            </select>
-                            <input type="text" name="motivoMantenimiento"
-                                   placeholder="Motivo (opcional)" style="font-size:11px;width:100px;"/>
-                            <button type="submit" class="btn btn-secondary" style="padding:2px 6px;font-size:11px;">Cambiar</button>
-                        </form>
-                    </div>
+                <!-- Change state (admin only) -->
+                <div sec:authorize="hasRole('ADMIN')" style="margin-top:10px;">
+                    <form th:action="@{/celdas/{id}/estado(id=${celda.idCelda})}" method="post"
+                          style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;justify-content:center;">
+                        <select name="estado" class="form-select" style="font-size:11px;padding:4px;flex:1;min-width:90px;">
+                            <option th:each="est : ${estadoCelda}"
+                                    th:value="${est}"
+                                    th:text="${est}"
+                                    th:selected="${celda.estado == est}">DISPONIBLE</option>
+                        </select>
+                        <input type="text" name="motivoMantenimiento"
+                               class="form-input"
+                               placeholder="Motivo (opc.)"
+                               style="font-size:11px;padding:4px;flex:1;min-width:80px;"/>
+                        <button type="submit" class="btn btn-secondary btn-sm"
+                                style="padding:4px 8px;font-size:11px;">Cambiar</button>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <div th:if="${#lists.isEmpty(celdas)}" style="text-align:center;padding:40px;color:#999;">
-                No hay celdas registradas.
-            </div>
+        <div th:if="${#lists.isEmpty(celdas)}" class="table-empty">
+            No hay celdas registradas.
         </div>
     </div>
+
     <script th:src="@{/js/celdas.js}"></script>
+
+</section>
 </body>
 </html>

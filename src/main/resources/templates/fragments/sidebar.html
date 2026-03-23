@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<aside th:fragment="sidebar(active)" class="app-sidebar">
+    <!-- Brand -->
+    <a th:href="@{/menu}" class="sidebar-brand">
+        <div class="sidebar-brand-icon">🚗</div>
+        <div class="sidebar-brand-text">
+            <strong>AutosColombia</strong>
+            <span>Gestión de Parqueadero</span>
+        </div>
+    </a>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+        <span class="nav-section-label">Operaciones</span>
+
+        <a th:href="@{/menu}"
+           th:classappend="${active == 'menu'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">🏠</span> Dashboard
+        </a>
+
+        <a th:href="@{/ingreso}"
+           th:classappend="${active == 'ingreso'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">📥</span> Registrar Ingreso
+        </a>
+
+        <a th:href="@{/salida}"
+           th:classappend="${active == 'salida'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">📤</span> Procesar Salida
+        </a>
+
+        <a th:href="@{/buscar}"
+           th:classappend="${active == 'buscar'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">🔍</span> Buscar Vehículo
+        </a>
+
+        <span class="nav-section-label">Consultas</span>
+
+        <a th:href="@{/parqueados}"
+           th:classappend="${active == 'parqueados'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">🅿️</span> Vehículos Parqueados
+        </a>
+
+        <a th:href="@{/celdas}"
+           th:classappend="${active == 'celdas'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">🏢</span> Celdas
+        </a>
+
+        <span class="nav-section-label">Administración</span>
+
+        <a th:href="@{/empleados}"
+           th:classappend="${active == 'empleados'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">👥</span> Empleados / Usuarios
+        </a>
+    </nav>
+
+    <!-- Footer: current user + logout -->
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar">
+                <span sec:authentication="name" th:text="${#strings.substring(#authentication.name,0,1).toUpperCase()}">U</span>
+            </div>
+            <div>
+                <div class="user-name" sec:authentication="name">Usuario</div>
+                <div class="user-role">
+                    <span sec:authorize="hasRole('ADMIN')" class="role-badge-admin">ADMIN</span>
+                    <span sec:authorize="hasRole('EMPLEADO')" class="role-badge-empleado">EMPLEADO</span>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger btn-block btn-sm">
+                🚪 Cerrar Sesión
+            </button>
+        </form>
+    </div>
+</aside>
+</body>
+</html>

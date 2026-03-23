@@ -1,47 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Salida - AutosColombia</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <script th:src="@{/js/main.js}" defer></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Procesar Salida', 'salida')}">
+<head></head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚗 AutosColombia</h1>
-            <a th:href="@{/menu}" class="btn btn-secondary">← Volver al Menú</a>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">📤 Registrar Salida de Vehículo</h2>
+                <p class="card-subtitle">Ingrese los datos del vehículo para procesar su salida y cobro</p>
+            </div>
+            <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver al Menú</a>
         </div>
 
-        <div class="content-box">
-            <h2>📤 Registrar Salida de Vehículo</h2>
-
-            <div th:if="${mensaje}" class="alert alert-success">
-                ✓ <span th:text="${mensaje}"></span>
-            </div>
-            <div th:if="${error}" class="alert alert-danger">
-                ✗ <span th:text="${error}"></span>
-            </div>
-
-            <form th:action="@{/salida}" th:object="${form}" method="post">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>🔖 Placa del Vehículo:</label>
-                        <input type="text" th:field="*{placa}" placeholder="Ej: ABC123" required autofocus/>
-                    </div>
-                    <div class="form-group">
-                        <label>🔢 VIN (Verificación):</label>
-                        <input type="text" th:field="*{vin}" placeholder="Número de identificación" maxlength="17" required/>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button type="submit" class="btn btn-primary" style="flex: 1;">💵 Procesar Salida y Cobro</button>
-                    <a th:href="@{/menu}" class="btn btn-secondary">✗ Cancelar</a>
-                </div>
-            </form>
+        <div th:if="${mensaje}" class="alert alert-success">
+            ✓ <span th:text="${mensaje}"></span>
         </div>
+        <div th:if="${error}" class="alert alert-danger">
+            ✗ <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/salida}" th:object="${form}" method="post">
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="placa">🔖 Placa del Vehículo <span class="req">*</span></label>
+                    <input id="placa" type="text" th:field="*{placa}"
+                           class="form-input" placeholder="Ej: ABC123" required autofocus/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="vin">🔢 VIN (Verificación) <span class="req">*</span></label>
+                    <input id="vin" type="text" th:field="*{vin}"
+                           class="form-input" placeholder="Número de identificación" maxlength="17" required/>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/menu}" class="btn btn-outline">✗ Cancelar</a>
+                <button type="submit" class="btn btn-primary">💵 Procesar Salida y Cobro</button>
+            </div>
+        </form>
     </div>
+
+</section>
 </body>
 </html>
