@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="body(content, pageTitle, active)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${pageTitle} + ' - AutosColombia'">AutosColombia</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="app-shell">
+
+    <!-- Sidebar -->
+    <th:block th:replace="~{fragments/sidebar :: sidebar(${active})}"/>
+
+    <!-- Main -->
+    <div class="app-main">
+
+        <!-- Topbar -->
+        <header class="app-topbar">
+            <div>
+                <h1 class="topbar-title" th:text="${pageTitle}">Página</h1>
+            </div>
+        </header>
+
+        <!-- Page content -->
+        <main class="app-content">
+            <th:block th:replace="${content}"/>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}" defer></script>
+</body>
+</html>
