@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Gestión de Usuarios', 'usuarios')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div th:if="${param.exito}"    class="alert alert-success">✓ Operación realizada con éxito.</div>
+    <div th:if="${param.eliminado}" class="alert alert-success">✓ Usuario eliminado correctamente.</div>
+
+    <!-- Administradores -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">🛡️ Administradores</h2>
+                <p class="card-subtitle">Usuarios con acceso total al sistema</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <a th:href="@{/usuarios/nuevo(tipo=administrador)}" class="btn btn-success btn-sm">+ Nuevo Administrador</a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Usuario Login</th>
+                        <th>Nombre Completo</th>
+                        <th>Documento</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th style="text-align:right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="admin : ${admins}">
+                        <td th:text="${admin.nombreUsuario}">-</td>
+                        <td th:text="${admin.nombreCompleto != null ? admin.nombreCompleto : '—'}">-</td>
+                        <td th:text="${admin.documento != null ? admin.documento : '—'}">-</td>
+                        <td th:text="${admin.email != null ? admin.email : '—'}">-</td>
+                        <td th:text="${admin.telefono != null ? admin.telefono : '—'}">-</td>
+                        <td style="text-align:right; white-space:nowrap;">
+                            <a th:href="@{/usuarios/administrador/{id}/editar(id=${admin.idUsuario})}"
+                               class="btn btn-secondary btn-sm">✏️ Editar</a>
+                            <form th:action="@{/usuarios/administrador/{id}/eliminar(id=${admin.idUsuario})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('¿Eliminar administrador ' + this.dataset.nombre + '?');"
+                                  th:data-nombre="${admin.nombreUsuario}">
+                                <button type="submit" class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(admins)}">
+                        <td colspan="6" class="table-empty">No hay administradores registrados.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empleados -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">👷 Empleados</h2>
+                <p class="card-subtitle">Usuarios con acceso operativo al sistema</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <a th:href="@{/usuarios/nuevo(tipo=empleado)}" class="btn btn-success btn-sm">+ Nuevo Empleado</a>
+                <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver al Menú</a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Documento</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Último Login</th>
+                        <th style="text-align:right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="emp : ${empleados}">
+                        <td th:text="${emp.nombreCompleto}">-</td>
+                        <td th:text="${emp.documento}">-</td>
+                        <td th:text="${emp.email}">-</td>
+                        <td th:text="${emp.telefono != null ? emp.telefono : '—'}">-</td>
+                        <td th:text="${emp.ultimoLogin != null ? emp.ultimoLogin : '—'}">-</td>
+                        <td style="text-align:right; white-space:nowrap;">
+                            <a th:href="@{/usuarios/empleado/{id}/editar(id=${emp.idEmpleado})}"
+                               class="btn btn-secondary btn-sm">✏️ Editar</a>
+                            <form th:action="@{/usuarios/empleado/{id}/eliminar(id=${emp.idEmpleado})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('¿Eliminar empleado ' + this.dataset.nombre + '?');"
+                                  th:data-nombre="${emp.nombreCompleto}">
+                                <button type="submit" class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(empleados)}">
+                        <td colspan="6" class="table-empty">No hay empleados registrados.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

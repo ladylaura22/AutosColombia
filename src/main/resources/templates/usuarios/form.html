@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle=${esNuevo ? (tipo == 'administrador' ? 'Nuevo Administrador' : 'Nuevo Empleado') : (tipo == 'administrador' ? 'Editar Administrador' : 'Editar Empleado')}"
+      th:replace="~{layout :: body(~{::section#page-content}, ${pageTitle}, 'usuarios')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title"
+                    th:text="${esNuevo ? (tipo == 'administrador' ? '🛡️ Registrar Administrador' : '👷 Registrar Empleado') : (tipo == 'administrador' ? '✏️ Editar Administrador' : '✏️ Editar Empleado')}">
+                    Formulario de Usuario
+                </h2>
+                <p class="card-subtitle"
+                   th:text="${esNuevo ? 'Complete los datos del nuevo usuario' : 'Modifique los datos del usuario'}">
+                    Datos del usuario
+                </p>
+            </div>
+            <a th:href="@{/usuarios}" class="btn btn-outline btn-sm">← Volver a Usuarios</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger">✗ <span th:text="${error}"></span></div>
+
+        <!-- Formulario crear -->
+        <form th:if="${esNuevo}" th:action="@{/usuarios}" method="post">
+            <input type="hidden" name="tipo" th:value="${tipo}"/>
+
+            <div class="form-grid">
+                <!-- Solo admin: nombre_usuario (login) -->
+                <div class="form-field col-6" th:if="${tipo == 'administrador'}">
+                    <label class="form-label" for="nombreUsuario">
+                        Nombre de Usuario (login) <span class="req">*</span>
+                    </label>
+                    <input id="nombreUsuario" type="text" name="nombreUsuario"
+                           class="form-input" placeholder="Nombre para iniciar sesión"
+                           th:value="${nombreUsuario}" required maxlength="50"/>
+                </div>
+
+                <!-- Nombre completo -->
+                <div class="form-field col-6">
+                    <label class="form-label" for="nombreCompleto">
+                        Nombre Completo <span class="req">*</span>
+                    </label>
+                    <input id="nombreCompleto" type="text" name="nombreCompleto"
+                           class="form-input" placeholder="Nombre y apellidos"
+                           th:value="${nombreCompleto}" required maxlength="120"/>
+                </div>
+
+                <!-- Documento -->
+                <div class="form-field col-6">
+                    <label class="form-label" for="documento">
+                        Documento <span class="req">*</span>
+                    </label>
+                    <input id="documento" type="text" name="documento"
+                           class="form-input" placeholder="Número de documento"
+                           th:value="${documento}" required maxlength="20"/>
+                </div>
+
+                <!-- Email -->
+                <div class="form-field col-6">
+                    <label class="form-label" for="email">
+                        Email <span class="req">*</span>
+                    </label>
+                    <input id="email" type="email" name="email"
+                           class="form-input" placeholder="correo@ejemplo.com"
+                           th:value="${emailVal}" required maxlength="120"/>
+                </div>
+
+                <!-- Teléfono -->
+                <div class="form-field col-6">
+                    <label class="form-label" for="telefono">
+                        Teléfono <span class="req" th:if="${tipo == 'empleado'}">*</span>
+                    </label>
+                    <input id="telefono" type="text" name="telefono"
+                           class="form-input" placeholder="Número de teléfono"
+                           th:value="${telefono}" th:required="${tipo == 'empleado'}" maxlength="30"/>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-field col-6">
+                    <label class="form-label" for="contrasena">
+                        Contraseña inicial <span class="req">*</span>
+                    </label>
+                    <input id="contrasena" type="password" name="contrasena"
+                           class="form-input" placeholder="Mínimo 6 caracteres"
+                           required minlength="6"/>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/usuarios}" class="btn btn-outline">✗ Cancelar</a>
+                <button type="submit" class="btn btn-success">✓ Guardar Usuario</button>
+            </div>
+        </form>
+
+        <!-- Formulario editar administrador -->
+        <form th:if="${!esNuevo and tipo == 'administrador'}"
+              th:action="@{/usuarios/administrador/{id}(id=${usuario.idUsuario})}" method="post">
+
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="nombreUsuarioE">
+                        Nombre de Usuario (login) <span class="req">*</span>
+                    </label>
+                    <input id="nombreUsuarioE" type="text" name="nombreUsuario"
+                           class="form-input"
+                           th:value="${usuario.nombreUsuario}" required maxlength="50"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="nombreCompletoE">
+                        Nombre Completo <span class="req">*</span>
+                    </label>
+                    <input id="nombreCompletoE" type="text" name="nombreCompleto"
+                           class="form-input"
+                           th:value="${usuario.nombreCompleto}" required maxlength="120"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="documentoE">
+                        Documento <span class="req">*</span>
+                    </label>
+                    <input id="documentoE" type="text" name="documento"
+                           class="form-input"
+                           th:value="${usuario.documento}" required maxlength="20"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="emailE">
+                        Email <span class="req">*</span>
+                    </label>
+                    <input id="emailE" type="email" name="email"
+                           class="form-input"
+                           th:value="${usuario.email}" required maxlength="120"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="telefonoE">Teléfono</label>
+                    <input id="telefonoE" type="text" name="telefono"
+                           class="form-input"
+                           th:value="${usuario.telefono}" maxlength="30"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="contrasenaE">Nueva Contraseña</label>
+                    <input id="contrasenaE" type="password" name="contrasena"
+                           class="form-input" placeholder="Dejar vacío para no cambiar"
+                           minlength="6"/>
+                    <p class="form-hint">Dejar vacío para mantener la contraseña actual.</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/usuarios}" class="btn btn-outline">✗ Cancelar</a>
+                <button type="submit" class="btn btn-success">✓ Guardar Cambios</button>
+            </div>
+        </form>
+
+        <!-- Formulario editar empleado -->
+        <form th:if="${!esNuevo and tipo == 'empleado'}"
+              th:action="@{/usuarios/empleado/{id}(id=${usuario.idEmpleado})}" method="post">
+
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="nombreCompletoEmp">
+                        Nombre Completo <span class="req">*</span>
+                    </label>
+                    <input id="nombreCompletoEmp" type="text" name="nombreCompleto"
+                           class="form-input"
+                           th:value="${usuario.nombreCompleto}" required maxlength="120"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="documentoEmp">
+                        Documento <span class="req">*</span>
+                    </label>
+                    <input id="documentoEmp" type="text" name="documento"
+                           class="form-input"
+                           th:value="${usuario.documento}" required maxlength="20"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="emailEmp">
+                        Email <span class="req">*</span>
+                    </label>
+                    <input id="emailEmp" type="email" name="email"
+                           class="form-input"
+                           th:value="${usuario.email}" required maxlength="120"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="telefonoEmp">
+                        Teléfono <span class="req">*</span>
+                    </label>
+                    <input id="telefonoEmp" type="text" name="telefono"
+                           class="form-input"
+                           th:value="${usuario.telefono}" required maxlength="30"/>
+                </div>
+
+                <div class="form-field col-6">
+                    <label class="form-label" for="contrasenaEmp">Nueva Contraseña</label>
+                    <input id="contrasenaEmp" type="password" name="contrasena"
+                           class="form-input" placeholder="Dejar vacío para no cambiar"
+                           minlength="6"/>
+                    <p class="form-hint">Dejar vacío para mantener la contraseña actual.</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/usuarios}" class="btn btn-outline">✗ Cancelar</a>
+                <button type="submit" class="btn btn-success">✓ Guardar Cambios</button>
+            </div>
+        </form>
+
+    </div>
+
+</section>
+</body>
+</html>
