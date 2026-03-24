@@ -43,9 +43,10 @@ public class SecurityConfig {
                 .requestMatchers("/celdas").hasAnyRole("ADMIN", "EMPLEADO")
                 .requestMatchers("/api/celdas").hasAnyRole("ADMIN", "EMPLEADO")
                 .requestMatchers("/api/celdas/disponibles").hasAnyRole("ADMIN", "EMPLEADO")
-                // Solo Admin: CRUD celdas y empleados
+                // Solo Admin: CRUD celdas, empleados y gestion de usuarios
                 .requestMatchers("/api/celdas/**").hasRole("ADMIN")
                 .requestMatchers("/empleados/**").hasRole("ADMIN")
+                .requestMatchers("/usuarios/**").hasRole("ADMIN")
                 // Resto: autenticado
                 .anyRequest().authenticated()
             )

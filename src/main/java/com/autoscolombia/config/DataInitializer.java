@@ -27,6 +27,10 @@ public class DataInitializer {
                 Administrador a = new Administrador();
                 a.setNombreUsuario("Laura");
                 a.setContrasenaHash(encoder.encode("admin123"));
+                a.setNombreCompleto("Laura Administradora");
+                a.setDocumento("1000000000");
+                a.setEmail("admin@autoscolombia.com");
+                a.setTelefono("3009876543");
                 return adminRepo.save(a);
             });
 
