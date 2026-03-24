@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Iniciar Sesión - AutosColombia</title>
+    <title>Iniciar Sesión - Autos Colombia</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}"/>
 </head>
 <body>
 <div class="login-page">
     <div class="login-card">
-        <div class="login-logo">🚗</div>
-        <h1 class="login-brand-name">AutosColombia</h1>
+        <img th:src="@{/img/logo-autos-colombia.png}" alt="Autos Colombia" class="app-logo app-logo-lg login-logo"/>
+        <h1 class="login-brand-name">Autos Colombia</h1>
         <p class="login-tagline">Sistema de Gestión de Parqueadero</p>
 
         <div th:if="${param.error}" class="alert alert-danger">
