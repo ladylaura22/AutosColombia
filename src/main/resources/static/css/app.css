@@ -584,15 +584,7 @@ img { max-width: 100%; }
   max-width: 400px;
 }
 .login-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-md);
-  background: var(--brand);
-  color: #fff;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   margin: 0 auto 16px;
 }
 .login-brand-name {
@@ -665,4 +657,21 @@ img { max-width: 100%; }
   .dashboard-grid { grid-template-columns: 1fr; }
   .form-actions { flex-direction: column; }
   .form-actions .btn { width: 100%; justify-content: center; }
+}
+
+/* ── Logo ─────────────────────────────────────────────────────────── */
+.app-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 14px rgba(2, 6, 23, .08);
+  flex-shrink: 0;
+}
+
+.app-logo-lg {
+  width: 72px;
+  height: 72px;
 }
