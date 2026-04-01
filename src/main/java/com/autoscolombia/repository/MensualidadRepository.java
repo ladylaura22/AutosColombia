@@ -3,8 +3,10 @@ package com.autoscolombia.repository;
 import com.autoscolombia.domain.Mensualidad;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface MensualidadRepository extends JpaRepository<Mensualidad, Integer> {
 
@@ -16,4 +18,7 @@ public interface MensualidadRepository extends JpaRepository<Mensualidad, Intege
               and :hoy between m.fechaInicio and m.fechaFin
             """)
     boolean tieneMensualidadActiva(String placa, LocalDate hoy);
+
+    @Query("SELECT m FROM Mensualidad m WHERE m.vehiculo.placa = :placa AND m.estaActiva = true AND m.fechaFin >= :hoy ORDER BY m.fechaFin DESC")
+    List<Mensualidad> findActivasByPlaca(@Param("placa") String placa, @Param("hoy") LocalDate hoy);
 }

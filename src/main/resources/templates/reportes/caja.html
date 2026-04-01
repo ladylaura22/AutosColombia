@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Reporte de Caja', 'reportes-caja')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">📊 Reporte de Caja</h2>
+                <p class="card-subtitle">Resumen de pagos por fecha</p>
+            </div>
+            <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Menú</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Formulario de selección de fecha -->
+        <form th:action="@{/reportes/caja}" method="post" style="padding:16px;display:flex;gap:12px;align-items:flex-end;">
+            <div class="form-field" style="margin:0;">
+                <label class="form-label" for="fecha">Fecha del Reporte</label>
+                <input type="date" id="fecha" name="fecha" class="form-input" th:value="${fecha}" required/>
+            </div>
+            <button type="submit" class="btn btn-primary">📊 Generar Reporte</button>
+        </form>
+
+        <!-- Resultados del reporte -->
+        <div th:if="${reporte != null}" style="padding:16px;">
+
+            <!-- Resumen de totales -->
+            <div class="form-grid" style="margin-bottom:20px;">
+                <div class="form-field col-6" style="padding:16px;background:#e8f5e9;border-radius:8px;text-align:center;">
+                    <p class="form-label">Total Recaudado</p>
+                    <strong style="font-size:1.5rem;color:#2e7d32;" th:text="${'$' + reporte.totalBruto}">$0</strong>
+                </div>
+                <div class="form-field col-6" style="padding:16px;background:#fff3e0;border-radius:8px;text-align:center;">
+                    <p class="form-label">Total Anulado</p>
+                    <strong style="font-size:1.5rem;color:#e65100;" th:text="${'$' + reporte.totalAnulado}">$0</strong>
+                </div>
+                <div class="form-field col-6" style="padding:16px;background:#f3e5f5;border-radius:8px;text-align:center;">
+                    <p class="form-label">Cantidad de Pagos</p>
+                    <strong style="font-size:1.5rem;" th:text="${reporte.cantidad}">0</strong>
+                </div>
+            </div>
+
+            <!-- Desglose por método -->
+            <div th:if="${not #maps.isEmpty(reporte.desglosePorMetodo)}" style="margin-bottom:20px;">
+                <h3 class="card-title" style="font-size:1rem;margin-bottom:8px;">Por Método de Pago</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>Método</th><th>Total</th></tr></thead>
+                        <tbody>
+                            <tr th:each="entry : ${reporte.desglosePorMetodo}">
+                                <td th:text="${entry.key}">-</td>
+                                <td th:text="${'$' + entry.value}">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Desglose por tipo -->
+            <div th:if="${not #maps.isEmpty(reporte.desglosePorTipo)}" style="margin-bottom:20px;">
+                <h3 class="card-title" style="font-size:1rem;margin-bottom:8px;">Por Tipo de Pago</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>Tipo</th><th>Total</th></tr></thead>
+                        <tbody>
+                            <tr th:each="entry : ${reporte.desglosePorTipo}">
+                                <td th:text="${entry.key}">-</td>
+                                <td th:text="${'$' + entry.value}">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Listado de pagos del día -->
+            <h3 class="card-title" style="font-size:1rem;margin-bottom:8px;">Detalle de Pagos</h3>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Hora</th>
+                            <th>Placa</th>
+                            <th>Tipo</th>
+                            <th>Método</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${reporte.pagos}">
+                            <td th:text="${p.idPago}">-</td>
+                            <td th:text="${p.creadoEn != null ? #temporals.format(p.creadoEn,'HH:mm') : '-'}">-</td>
+                            <td>
+                                <span th:if="${p.registroParqueo != null and p.registroParqueo.vehiculo != null}"
+                                      th:text="${p.registroParqueo.vehiculo.placa}">-</span>
+                                <span th:if="${p.mensualidad != null and p.mensualidad.vehiculo != null}"
+                                      th:text="${p.mensualidad.vehiculo.placa}">-</span>
+                            </td>
+                            <td th:text="${p.tipoPago}">-</td>
+                            <td th:text="${p.metodoPago}">-</td>
+                            <td th:text="${'$' + p.valor}">-</td>
+                            <td th:text="${p.estado}">-</td>
+                            <td>
+                                <a th:href="@{/pagos/{id}(id=${p.idPago})}" class="btn btn-outline btn-sm">Ver</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(reporte.pagos)}">
+                            <td colspan="8" class="table-empty">No hay pagos registrados para esta fecha.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

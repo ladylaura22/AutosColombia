@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Comprobante de Pago', 'pagos-historial')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card" style="max-width:600px;margin:0 auto;">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">🧾 Comprobante de Pago</h2>
+                <p class="card-subtitle">AutosColombia — Gestión de Parqueadero</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <a th:href="@{/pagos/{id}/comprobante.pdf(id=${pago.idPago})}" class="btn btn-primary btn-sm">📄 Descargar PDF</a>
+                <a th:href="@{/pagos/{id}(id=${pago.idPago})}" class="btn btn-outline btn-sm">← Volver</a>
+            </div>
+        </div>
+
+        <div style="padding:24px;">
+            <table class="data-table">
+                <tbody>
+                    <tr>
+                        <td><strong>ID Pago</strong></td>
+                        <td th:text="'#' + ${pago.idPago}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fecha/Hora</strong></td>
+                        <td th:text="${pago.creadoEn != null ? #temporals.format(pago.creadoEn,'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Placa</strong></td>
+                        <td>
+                            <span th:if="${pago.registroParqueo != null and pago.registroParqueo.vehiculo != null}"
+                                  th:text="${pago.registroParqueo.vehiculo.placa}">-</span>
+                            <span th:if="${pago.mensualidad != null and pago.mensualidad.vehiculo != null}"
+                                  th:text="${pago.mensualidad.vehiculo.placa}">-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo de Pago</strong></td>
+                        <td th:text="${pago.tipoPago}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Método de Pago</strong></td>
+                        <td th:text="${pago.metodoPago}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Valor</strong></td>
+                        <td th:text="${'$' + pago.valor}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Referencia</strong></td>
+                        <td th:text="${pago.referencia ?: '-'}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado</strong></td>
+                        <td th:text="${pago.estado}">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Registrado por</strong></td>
+                        <td th:text="${pago.creadoPor ?: '-'}">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${pago.estado.name() == 'ANULADO'}"
+                 style="margin-top:20px;text-align:center;padding:12px;background:#fff3f3;border-radius:8px;border:2px solid #e74c3c;">
+                <strong style="color:#c0392b;font-size:1.5rem;">⛔ PAGO ANULADO</strong>
+                <p th:text="'Motivo: ' + (${pago.motivoAnulacion} ?: 'No especificado')" style="margin:4px 0;"></p>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

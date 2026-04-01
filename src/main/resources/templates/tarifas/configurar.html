@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Configurar Tarifas', 'tarifas')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">⚙️ Configuración de Tarifas</h2>
+                <p class="card-subtitle">Define las tarifas vigentes del parqueadero</p>
+            </div>
+            <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Menú</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Tarifa activa actual -->
+        <div th:if="${tarifa != null}" class="card" style="margin:16px;padding:16px;background:#f0f8ff;">
+            <h3 class="card-title" style="font-size:1rem;">💡 Tarifa Activa Actual</h3>
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <span class="form-label">Hora Carro</span>
+                    <strong th:text="${'$' + tarifa.tarifaHoraCarro}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Hora Moto</span>
+                    <strong th:text="${'$' + tarifa.tarifaHoraMoto}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Mensualidad</span>
+                    <strong th:text="${'$' + tarifa.tarifaMensual}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Actualizado</span>
+                    <strong th:text="${tarifa.modificadoEn != null ? #temporals.format(tarifa.modificadoEn,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                </div>
+            </div>
+        </div>
+        <div th:if="${tarifa == null}" class="alert alert-danger" style="margin:16px;">
+            ⚠️ No hay tarifa activa configurada. Por favor configura una a continuación.
+        </div>
+
+        <!-- Formulario para actualizar -->
+        <form th:action="@{/tarifas}" method="post" style="padding:16px;">
+            <h3 class="card-title" style="font-size:1rem;margin-bottom:12px;">📝 Actualizar Tarifas</h3>
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="tarifaHoraCarro">Tarifa por Hora — Carro ($) *</label>
+                    <input type="number" id="tarifaHoraCarro" name="tarifaHoraCarro" class="form-input"
+                           step="0.01" min="1" required
+                           th:value="${tarifa != null ? tarifa.tarifaHoraCarro : ''}"
+                           placeholder="Ej: 3000"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="tarifaHoraMoto">Tarifa por Hora — Moto ($) *</label>
+                    <input type="number" id="tarifaHoraMoto" name="tarifaHoraMoto" class="form-input"
+                           step="0.01" min="1" required
+                           th:value="${tarifa != null ? tarifa.tarifaHoraMoto : ''}"
+                           placeholder="Ej: 2000"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="tarifaMensual">Tarifa Mensual ($) *</label>
+                    <input type="number" id="tarifaMensual" name="tarifaMensual" class="form-input"
+                           step="0.01" min="1" required
+                           th:value="${tarifa != null ? tarifa.tarifaMensual : ''}"
+                           placeholder="Ej: 150000"/>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Guardar Tarifas</button>
+            </div>
+        </form>
+    </div>
+
+</section>
+</body>
+</html>

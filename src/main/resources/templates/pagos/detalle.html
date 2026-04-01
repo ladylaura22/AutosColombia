@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Detalle de Pago', 'pagos-historial')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">💳 Detalle del Pago #<span th:text="${pago.idPago}"></span></h2>
+                <p class="card-subtitle">Información completa del pago registrado</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <a th:href="@{/pagos/{id}/comprobante.pdf(id=${pago.idPago})}" class="btn btn-primary btn-sm">📄 Descargar PDF</a>
+                <a th:href="@{/pagos/{id}/comprobante(id=${pago.idPago})}" class="btn btn-secondary btn-sm">🖨️ Ver Comprobante</a>
+                <a sec:authorize="hasRole('ADMIN')"
+                   th:href="@{/pagos/{id}/anular(id=${pago.idPago})}"
+                   th:if="${pago.estado.name() == 'PAGADO'}"
+                   class="btn btn-danger btn-sm">❌ Anular</a>
+                <a th:href="@{/pagos/historial}" class="btn btn-outline btn-sm">← Historial</a>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div style="padding:16px;">
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <span class="form-label">ID Pago</span>
+                    <strong th:text="${pago.idPago}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Estado</span>
+                    <strong th:text="${pago.estado}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Tipo de Pago</span>
+                    <strong th:text="${pago.tipoPago}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Método de Pago</span>
+                    <strong th:text="${pago.metodoPago}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Valor</span>
+                    <strong th:text="${'$' + pago.valor}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Referencia</span>
+                    <strong th:text="${pago.referencia ?: '-'}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Placa</span>
+                    <strong>
+                        <span th:if="${pago.registroParqueo != null and pago.registroParqueo.vehiculo != null}"
+                              th:text="${pago.registroParqueo.vehiculo.placa}">-</span>
+                        <span th:if="${pago.mensualidad != null and pago.mensualidad.vehiculo != null}"
+                              th:text="${pago.mensualidad.vehiculo.placa}">-</span>
+                    </strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Fecha/Hora</span>
+                    <strong th:text="${pago.creadoEn != null ? #temporals.format(pago.creadoEn,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Registrado por</span>
+                    <strong th:text="${pago.creadoPor ?: '-'}">-</strong>
+                </div>
+            </div>
+
+            <!-- Detalle si es pago por horas -->
+            <div th:if="${pago.registroParqueo != null}" style="margin-top:16px;">
+                <h3 class="card-title" style="font-size:1rem;">📋 Registro de Parqueo</h3>
+                <div class="form-grid">
+                    <div class="form-field col-6">
+                        <span class="form-label">ID Registro</span>
+                        <strong th:text="${pago.registroParqueo.idRegistro}">-</strong>
+                    </div>
+                    <div class="form-field col-6">
+                        <span class="form-label">Ingreso</span>
+                        <strong th:text="${pago.registroParqueo.horaIngreso != null ? #temporals.format(pago.registroParqueo.horaIngreso,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                    </div>
+                    <div class="form-field col-6">
+                        <span class="form-label">Salida</span>
+                        <strong th:text="${pago.registroParqueo.horaSalida != null ? #temporals.format(pago.registroParqueo.horaSalida,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalle si es mensualidad -->
+            <div th:if="${pago.mensualidad != null}" style="margin-top:16px;">
+                <h3 class="card-title" style="font-size:1rem;">📅 Mensualidad</h3>
+                <div class="form-grid">
+                    <div class="form-field col-6">
+                        <span class="form-label">Vigencia</span>
+                        <strong th:text="${pago.mensualidad.fechaInicio + ' — ' + pago.mensualidad.fechaFin}">-</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos de anulación -->
+            <div th:if="${pago.estado.name() == 'ANULADO'}" style="margin-top:16px;padding:12px;background:#fff3f3;border-radius:8px;">
+                <h3 class="card-title" style="font-size:1rem;color:#c0392b;">❌ Información de Anulación</h3>
+                <div class="form-grid">
+                    <div class="form-field col-6">
+                        <span class="form-label">Anulado por</span>
+                        <strong th:text="${pago.anuladoPor ?: '-'}">-</strong>
+                    </div>
+                    <div class="form-field col-6">
+                        <span class="form-label">Fecha Anulación</span>
+                        <strong th:text="${pago.anuladoEn != null ? #temporals.format(pago.anuladoEn,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                    </div>
+                    <div class="form-field col-6">
+                        <span class="form-label">Motivo</span>
+                        <strong th:text="${pago.motivoAnulacion ?: '-'}">-</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>
