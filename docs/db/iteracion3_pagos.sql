@@ -34,5 +34,5 @@ CREATE TABLE IF NOT EXISTS pago (
 
 -- Tarifa inicial por defecto
 INSERT INTO tarifa (tarifa_hora_carro, tarifa_hora_moto, tarifa_mensual, activo, creado_en, modificado_en)
-SELECT 3000.00, 2000.00, 150000.00, TRUE, NOW(), NOW()
+SELECT 10000.00, 5000.00, 70000.00, TRUE, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM tarifa WHERE activo = TRUE);

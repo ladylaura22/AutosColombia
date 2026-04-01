@@ -62,7 +62,7 @@ public class ComprobantePdfService {
                 document.add(Chunk.NEWLINE);
                 PdfContentByte canvas = writer.getDirectContent();
                 Font watermarkFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 48);
-                watermarkFont.setColor(new Color(255, 0, 0, 60));
+                watermarkFont.setColor(new Color(200, 0, 0));
                 Phrase watermark = new Phrase("ANULADO", watermarkFont);
                 ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark,
                         document.getPageSize().getWidth() / 2,

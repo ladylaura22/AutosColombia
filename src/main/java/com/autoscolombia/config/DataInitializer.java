@@ -65,9 +65,9 @@ public class DataInitializer {
             // Tarifa por defecto
             if (tarifaRepo.count() == 0) {
                 Tarifa t = new Tarifa();
-                t.setTarifaHoraCarro(new BigDecimal("3000"));
-                t.setTarifaHoraMoto(new BigDecimal("2000"));
-                t.setTarifaMensual(new BigDecimal("150000"));
+                t.setTarifaHoraCarro(new BigDecimal("10000"));
+                t.setTarifaHoraMoto(new BigDecimal("5000"));
+                t.setTarifaMensual(new BigDecimal("70000"));
                 t.setActivo(true);
                 t.setCreadoEn(LocalDateTime.now());
                 t.setModificadoEn(LocalDateTime.now());
