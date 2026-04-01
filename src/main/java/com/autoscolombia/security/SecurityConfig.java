@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/empleados/**").hasRole("ADMIN")
                 .requestMatchers("/usuarios/**").hasRole("ADMIN")
                 // Pagos, tarifas, reportes
-                .requestMatchers("/pagos/*/anular", "/tarifas/**", "/reportes/**").hasRole("ADMIN")
+                .requestMatchers("/pagos/**/anular", "/tarifas/**", "/reportes/**").hasRole("ADMIN")
                 .requestMatchers("/pagos/**").hasAnyRole("ADMIN", "EMPLEADO")
                 // Resto: autenticado
                 .anyRequest().authenticated()

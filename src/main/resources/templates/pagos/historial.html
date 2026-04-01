@@ -38,21 +38,21 @@
                     <label class="form-label">Tipo de Pago</label>
                     <select name="tipoPago" class="form-input">
                         <option value="">Todos</option>
-                        <option th:each="tp : ${tiposPago}" th:value="${tp}" th:text="${tp}" th:selected="${filtro.tipoPago == tp.name()}"></option>
+                        <option th:each="tp : ${tiposPago}" th:value="${tp}" th:text="${tp}" th:selected="${filtro.tipoPago != null and filtro.tipoPago == tp.name()}"></option>
                     </select>
                 </div>
                 <div class="form-field col-6">
                     <label class="form-label">Método de Pago</label>
                     <select name="metodoPago" class="form-input">
                         <option value="">Todos</option>
-                        <option th:each="mp : ${metodosPago}" th:value="${mp}" th:text="${mp}" th:selected="${filtro.metodoPago == mp.name()}"></option>
+                        <option th:each="mp : ${metodosPago}" th:value="${mp}" th:text="${mp}" th:selected="${filtro.metodoPago != null and filtro.metodoPago == mp.name()}"></option>
                     </select>
                 </div>
                 <div class="form-field col-6">
                     <label class="form-label">Estado</label>
                     <select name="estado" class="form-input">
                         <option value="">Todos</option>
-                        <option th:each="ep : ${estadosPago}" th:value="${ep}" th:text="${ep}" th:selected="${filtro.estado == ep.name()}"></option>
+                        <option th:each="ep : ${estadosPago}" th:value="${ep}" th:text="${ep}" th:selected="${filtro.estado != null and filtro.estado == ep.name()}"></option>
                     </select>
                 </div>
             </div>
