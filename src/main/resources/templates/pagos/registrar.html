@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Registrar Pago por Horas', 'pagos-registrar')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">💰 Registrar Pago por Horas</h2>
+                <p class="card-subtitle">Cobra el tiempo de permanencia en el parqueadero</p>
+            </div>
+            <a th:href="@{/pagos/historial}" class="btn btn-outline btn-sm">← Historial</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Info del registro si ya se seleccionó -->
+        <div th:if="${registro != null}" class="card" style="margin:16px;padding:16px;background:#f8f9fa;">
+            <h3 class="card-title" style="font-size:1rem;">📋 Registro Seleccionado</h3>
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <span class="form-label">Placa:</span>
+                    <strong th:text="${registro.vehiculo?.placa}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Ingreso:</span>
+                    <strong th:text="${registro.horaIngreso != null ? #temporals.format(registro.horaIngreso,'dd/MM/yyyy HH:mm') : '-'}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Tipo Vehículo:</span>
+                    <strong th:text="${registro.vehiculo?.tipoVehiculo}">-</strong>
+                </div>
+                <div class="form-field col-6">
+                    <span class="form-label">Método Cobro:</span>
+                    <strong th:text="${registro.metodoCobro}">-</strong>
+                </div>
+            </div>
+        </div>
+
+        <form th:action="@{/pagos/registrar}" method="post" style="padding:16px;">
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="idRegistro">ID Registro *</label>
+                    <input type="number" id="idRegistro" name="idRegistro" class="form-input"
+                           th:value="${form.idRegistro}" required placeholder="Número de registro de parqueo"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="metodoPago">Método de Pago *</label>
+                    <select id="metodoPago" name="metodoPago" class="form-input" required>
+                        <option value="">Seleccionar...</option>
+                        <option th:each="mp : ${metodosPago}" th:value="${mp}" th:text="${mp}"></option>
+                    </select>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="referencia">Referencia</label>
+                    <input type="text" id="referencia" name="referencia" class="form-input"
+                           th:value="${form.referencia}" placeholder="Número de transacción (opcional)"/>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💳 Registrar Pago</button>
+                <a th:href="@{/pagos/historial}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</section>
+</body>
+</html>

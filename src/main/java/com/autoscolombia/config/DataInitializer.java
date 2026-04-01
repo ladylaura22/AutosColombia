@@ -4,14 +4,19 @@ import com.autoscolombia.domain.Administrador;
 import com.autoscolombia.domain.Celda;
 import com.autoscolombia.domain.Empleado;
 import com.autoscolombia.domain.EstadoCelda;
+import com.autoscolombia.domain.Tarifa;
 import com.autoscolombia.domain.TipoCelda;
 import com.autoscolombia.repository.AdministradorRepository;
 import com.autoscolombia.repository.CeldaRepository;
 import com.autoscolombia.repository.EmpleadoRepository;
+import com.autoscolombia.repository.TarifaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Configuration
 public class DataInitializer {
@@ -20,6 +25,7 @@ public class DataInitializer {
     CommandLineRunner initData(AdministradorRepository adminRepo,
                                EmpleadoRepository empleadoRepo,
                                CeldaRepository celdaRepo,
+                               TarifaRepository tarifaRepo,
                                PasswordEncoder encoder) {
         return args -> {
             // Admin por defecto
@@ -54,6 +60,18 @@ public class DataInitializer {
                 crearCelda(celdaRepo, "M-102", TipoCelda.MOTO, "Piso 1");
                 crearCelda(celdaRepo, "B-201", TipoCelda.AUTO, "Piso 2");
                 crearCelda(celdaRepo, "B-202", TipoCelda.AUTO, "Piso 2");
+            }
+
+            // Tarifa por defecto
+            if (tarifaRepo.count() == 0) {
+                Tarifa t = new Tarifa();
+                t.setTarifaHoraCarro(new BigDecimal("3000"));
+                t.setTarifaHoraMoto(new BigDecimal("2000"));
+                t.setTarifaMensual(new BigDecimal("150000"));
+                t.setActivo(true);
+                t.setCreadoEn(LocalDateTime.now());
+                t.setModificadoEn(LocalDateTime.now());
+                tarifaRepo.save(t);
             }
         };
     }

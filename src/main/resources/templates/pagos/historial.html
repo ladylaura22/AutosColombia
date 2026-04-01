@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Historial de Pagos', 'pagos-historial')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">💳 Historial de Pagos</h2>
+                <p class="card-subtitle">Consulta y filtra todos los pagos registrados</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <a th:href="@{/pagos/registrar}" class="btn btn-primary btn-sm">+ Pago por Horas</a>
+                <a th:href="@{/pagos/mensualidad}" class="btn btn-primary btn-sm">+ Mensualidad</a>
+                <a th:href="@{/menu}" class="btn btn-outline btn-sm">← Volver</a>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <form th:action="@{/pagos/historial}" method="post" class="card" style="margin:16px;padding:16px;">
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label">Desde</label>
+                    <input type="date" name="desde" th:value="${filtro.desde}" class="form-input"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" name="hasta" th:value="${filtro.hasta}" class="form-input"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label">Placa</label>
+                    <input type="text" name="placa" th:value="${filtro.placa}" class="form-input" placeholder="Ej: ABC123"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label">Tipo de Pago</label>
+                    <select name="tipoPago" class="form-input">
+                        <option value="">Todos</option>
+                        <option th:each="tp : ${tiposPago}" th:value="${tp}" th:text="${tp}" th:selected="${filtro.tipoPago == tp.name()}"></option>
+                    </select>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label">Método de Pago</label>
+                    <select name="metodoPago" class="form-input">
+                        <option value="">Todos</option>
+                        <option th:each="mp : ${metodosPago}" th:value="${mp}" th:text="${mp}" th:selected="${filtro.metodoPago == mp.name()}"></option>
+                    </select>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-input">
+                        <option value="">Todos</option>
+                        <option th:each="ep : ${estadosPago}" th:value="${ep}" th:text="${ep}" th:selected="${filtro.estado == ep.name()}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+                <a th:href="@{/pagos/historial}" class="btn btn-outline">Limpiar</a>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Placa</th>
+                        <th>Tipo</th>
+                        <th>Método</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                        <th>Registrado por</th>
+                        <th style="text-align:right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${pagos}">
+                        <td th:text="${p.idPago}">-</td>
+                        <td th:text="${p.creadoEn != null ? #temporals.format(p.creadoEn, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                        <td>
+                            <span th:if="${p.registroParqueo != null and p.registroParqueo.vehiculo != null}"
+                                  th:text="${p.registroParqueo.vehiculo.placa}">-</span>
+                            <span th:if="${p.mensualidad != null and p.mensualidad.vehiculo != null}"
+                                  th:text="${p.mensualidad.vehiculo.placa}">-</span>
+                        </td>
+                        <td th:text="${p.tipoPago}">-</td>
+                        <td th:text="${p.metodoPago}">-</td>
+                        <td th:text="${'$' + p.valor}">-</td>
+                        <td>
+                            <span th:text="${p.estado}"
+                                  th:classappend="${p.estado.name() == 'PAGADO'} ? 'role-badge-admin' : 'role-badge-empleado'"
+                                  style="padding:2px 8px;border-radius:12px;font-size:0.78rem;">-</span>
+                        </td>
+                        <td th:text="${p.creadoPor}">-</td>
+                        <td style="text-align:right;white-space:nowrap;">
+                            <a th:href="@{/pagos/{id}(id=${p.idPago})}" class="btn btn-outline btn-sm">Ver</a>
+                            <a th:href="@{/pagos/{id}/comprobante.pdf(id=${p.idPago})}" class="btn btn-secondary btn-sm">PDF</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pagos)}">
+                        <td colspan="9" class="table-empty">No hay pagos que coincidan con los filtros.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

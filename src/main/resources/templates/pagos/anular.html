@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Anular Pago', 'pagos-historial')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card" style="max-width:500px;margin:0 auto;">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">❌ Anular Pago #<span th:text="${pago.idPago}"></span></h2>
+                <p class="card-subtitle">Esta acción no se puede deshacer</p>
+            </div>
+            <a th:href="@{/pagos/{id}(id=${pago.idPago})}" class="btn btn-outline btn-sm">← Volver</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div style="padding:16px;background:#fff3f3;margin:16px;border-radius:8px;">
+            <p><strong>Pago:</strong> #<span th:text="${pago.idPago}"></span></p>
+            <p><strong>Valor:</strong> $<span th:text="${pago.valor}"></span></p>
+            <p><strong>Tipo:</strong> <span th:text="${pago.tipoPago}"></span></p>
+            <p><strong>Estado actual:</strong> <span th:text="${pago.estado}"></span></p>
+        </div>
+
+        <form th:action="@{/pagos/{id}/anular(id=${pago.idPago})}" method="post" style="padding:16px;">
+            <div class="form-field">
+                <label class="form-label" for="motivo">Motivo de Anulación *</label>
+                <textarea id="motivo" name="motivo" class="form-input" rows="4"
+                          required placeholder="Explique el motivo de la anulación..."
+                          style="width:100%;resize:vertical;"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('¿Confirma que desea anular este pago?')">
+                    ❌ Confirmar Anulación
+                </button>
+                <a th:href="@{/pagos/{id}(id=${pago.idPago})}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</section>
+</body>
+</html>

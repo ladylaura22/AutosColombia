@@ -61,6 +61,42 @@
            class="nav-link">
             <span class="nav-icon">👥</span> Empleados / Usuarios
         </a>
+
+        <span class="nav-section-label">Pagos</span>
+
+        <a th:href="@{/pagos/historial}"
+           th:classappend="${active == 'pagos-historial'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">💳</span> Historial de Pagos
+        </a>
+
+        <a th:href="@{/pagos/registrar}"
+           th:classappend="${active == 'pagos-registrar'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">💰</span> Registrar Pago (Horas)
+        </a>
+
+        <a th:href="@{/pagos/mensualidad}"
+           th:classappend="${active == 'pagos-mensualidad'} ? ' active'"
+           class="nav-link">
+            <span class="nav-icon">📅</span> Pago Mensualidad
+        </a>
+
+        <div sec:authorize="hasRole('ADMIN')">
+            <span class="nav-section-label">Configuración</span>
+
+            <a th:href="@{/tarifas}"
+               th:classappend="${active == 'tarifas'} ? ' active'"
+               class="nav-link">
+                <span class="nav-icon">⚙️</span> Tarifas
+            </a>
+
+            <a th:href="@{/reportes/caja}"
+               th:classappend="${active == 'reportes-caja'} ? ' active'"
+               class="nav-link">
+                <span class="nav-icon">📊</span> Reporte de Caja
+            </a>
+        </div>
     </nav>
 
     <!-- Footer: current user + logout -->

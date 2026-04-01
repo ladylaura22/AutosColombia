@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: body(~{::section#page-content}, 'Pago de Mensualidad', 'pagos-mensualidad')}">
+<head></head>
+<body>
+<section th:fragment="content" id="page-content">
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">📅 Pago de Mensualidad</h2>
+                <p class="card-subtitle">Registra el pago mensual para un vehículo</p>
+            </div>
+            <a th:href="@{/pagos/historial}" class="btn btn-outline btn-sm">← Historial</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form th:action="@{/pagos/mensualidad}" method="post" style="padding:16px;">
+            <div class="form-grid">
+                <div class="form-field col-6">
+                    <label class="form-label" for="placa">Placa del Vehículo *</label>
+                    <input type="text" id="placa" name="placa" class="form-input"
+                           th:value="${form.placa}" required placeholder="Ej: ABC123" style="text-transform:uppercase;"/>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="metodoPago">Método de Pago *</label>
+                    <select id="metodoPago" name="metodoPago" class="form-input" required>
+                        <option value="">Seleccionar...</option>
+                        <option th:each="mp : ${metodosPago}" th:value="${mp}" th:text="${mp}"></option>
+                    </select>
+                </div>
+                <div class="form-field col-6">
+                    <label class="form-label" for="referencia">Referencia</label>
+                    <input type="text" id="referencia" name="referencia" class="form-input"
+                           th:value="${form.referencia}" placeholder="Número de transacción (opcional)"/>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">📅 Registrar Mensualidad</button>
+                <a th:href="@{/pagos/historial}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</section>
+</body>
+</html>
